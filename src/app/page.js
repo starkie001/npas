@@ -1,6 +1,7 @@
 "use client"
 
 import { useSession, signOut } from "next-auth/react"
+import Image from "next/image"
 
 export default function HomePage() {
   const { data: session } = useSession()
@@ -12,10 +13,14 @@ export default function HomePage() {
       {session ? (
         <div>
           {session.user?.image && (
-            <img
+            <Image
               src={session.user.image}
               alt="Profile"
-              style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", marginBottom: 16 }}
+              width={64}
+              height={64}
+              className="rounded-circle"
+              style={{ objectFit: "cover", marginBottom: 16 }}
+              priority
             />
           )}
           <p>

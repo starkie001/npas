@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "$2b$10$5l99DS3NshjhcEG4jzp99e6N3.ncJKDu4RD2jkxgqcOILdd7Pdl82",
+    "image": null,
+    "role": "admin",
+    "status": "active",
+    "dateCreated": "2025-09-22T10:00:00.000Z",
+    "dateUpdated": "2025-09-22T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Customer User",
+    "email": "customer@example.com",
+    "password": "$2b$10$DLWUo6S6Cd22whpmLMdNxuB0cggW66.UVyAeJCjXMbfJzlt4a5Hn.",
+    "image": null,
+    "role": "customer",
+    "status": "active",
+    "dateCreated": "2025-09-22T10:00:00.000Z",
+    "dateUpdated": "2025-09-22T10:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "test123",
+    "image": null,
+    "role": "customer",
+    "status": "active",
+    "dateCreated": "2025-09-22T10:00:00.000Z",
+    "dateUpdated": "2025-09-22T10:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "DevOps Grid",
+    "email": "devopsgrid@gmail.com",
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocJGlUfcTg678LenGyRzRwsj1stYlwCcrV_jzeuOP3TM6cAF7uA=s96-c",
+    "role": "admin",
+    "status": "active",
+    "dateCreated": "2025-09-22T12:33:40.352Z",
+    "dateUpdated": "2025-09-22T12:33:40.352Z"
+  }
+]

@@ -1,9 +1,12 @@
+
 import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./globals.css";
+import "./styles/globals.css";
 import Providers from "@/components/Providers";
-import Navbar from "@/components/Navbar";
+/*import Navbar from "@/components/Navbar";*/
+import AppHeader from '../components/AppHeader';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,12 +24,22 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  /*const [menuOpen, setMenuOpen] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);*/
+
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preload" href="/npas-logo.png" as="image" />
+        <link rel="preload" href="/astro-bg.png" as="image" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <Navbar />
+          <>
+          <AppHeader />
           {children}
+          </>
         </Providers>
       </body>
     </html>

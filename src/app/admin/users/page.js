@@ -1,5 +1,6 @@
 import { requireAdmin } from "../../../auth-helpers"
 import { UserController } from "../../../lib/controllers/UserController"
+import DeleteButton from "./DeleteButton"
 
 const userController = new UserController();
 
@@ -54,6 +55,7 @@ export default async function UsersPage() {
                 <th scope="col">Role</th>
                 <th scope="col">Status</th>
                 <th scope="col">Created</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -98,6 +100,18 @@ export default async function UsersPage() {
                       new Date(user.dateCreated).toLocaleDateString() : 
                       'N/A'
                     }
+                  </td>
+                  <td>
+                    <div className="btn-group" role="group">
+                      <a 
+                        href={`/admin/users/edit/${user.id}`}
+                        className="btn btn-sm btn-outline-primary"
+                        title={`Edit ${user.name}`}
+                      >
+                        <span>✏️</span> Edit
+                      </a>
+                      <DeleteButton user={user} />
+                    </div>
                   </td>
                 </tr>
               ))}

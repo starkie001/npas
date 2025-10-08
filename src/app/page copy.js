@@ -1,4 +1,4 @@
-
+"use client"
 
 /*import { useSession, signOut } from "next-auth/react"
 import Image from "next/image"
@@ -42,15 +42,23 @@ export default function HomePage() {
   )
 }*/
 
-
+import { useState } from 'react';
+import Header from '../components/AppHeader';
+import Menu from '../components/Menu';
+import SignInForm from '../components/SignInForm';
 import Image from 'next/image';
 import './styles/globals.css'
 
 export default function Home() {
-  
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
 
   return (
-    
+    <>
+      <Header menuOpen={menuOpen} onToggleMenu={() => setMenuOpen(!menuOpen)} />
+      <Menu isOpen={menuOpen} onClose={() => setMenuOpen(false)}
+      onShowSignIn={() => setShowSignIn(true)}
+      />
       <main className="main-content">
         <div className="background-image">
           <Image
@@ -63,6 +71,8 @@ export default function Home() {
         <div className="hero-text">
           New Plymouth Astronomical Society
         </div>
+        {showSignIn && <SignInForm onClose={() => setShowSignIn(false)} />}
       </main>
+    </>
   );
 }

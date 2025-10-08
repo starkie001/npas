@@ -1,29 +1,31 @@
-"use client"
+"use client";
 
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import Link from "next/link"
-import GoogleIcon from "@/components/icons/GoogleIcon"
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import Link from "next/link";
+import GoogleIcon from "@/components/icons/GoogleIcon";
+import { useSession, signOut } from "next-auth/react";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const { data: session } = useSession();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleCredentialsLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
-    })
+    });
 
     if (result?.error) {
-      setError('Invalid email or password')
+      setError("Invalid email or password");
     } else {
-      window.location.href = '/account'
+      window.location.href = '/handle-redirect-after-login';
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -33,7 +35,9 @@ export default function SignInPage() {
             <div className="card-body p-5">
               <div className="text-center mb-4">
                 <h2 className="fw-bold">Sign In</h2>
-                <p className="text-muted">Welcome back! Please sign in to your account.</p>
+                <p className="text-muted">
+                  Welcome back! Please sign in to your account.
+                </p>
               </div>
 
               <div className="mb-4">
@@ -48,9 +52,9 @@ export default function SignInPage() {
 
               <div className="position-relative mb-4">
                 <hr />
-                <span 
+                <span
                   className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted"
-                  style={{ fontSize: '0.875rem' }}
+                  style={{ fontSize: "0.875rem" }}
                 >
                   OR
                 </span>
@@ -103,7 +107,7 @@ export default function SignInPage() {
 
               <div className="text-center mt-4">
                 <p>
-                  Don't have an account?{' '}
+                  Don't have an account?{" "}
                   <Link href="/auth/signup" className="text-decoration-none">
                     Sign Up
                   </Link>
@@ -114,5 +118,5 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

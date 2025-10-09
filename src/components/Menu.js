@@ -1,12 +1,24 @@
 import Link from 'next/link';
 import { useSession, signOut } from "next-auth/react"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function Menu({ isOpen, onClose, onShowSignIn }) {
   const { data: session } = useSession();
   const [showAdminSub, setShowAdminSub] = useState(false);
   const [showMembersSub, setShowMembersSub] = useState(false);
-  /*if (!isOpen) return null;*/
+  const [bookingsActive, setBookingsActive] = useState(true);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/obs-availability-settings");
+        if (res.ok) {
+          const data = await res.json();
+          setBookingsActive(data.bookingsActive);
+        }
+      } catch {}
+    }
+    fetchSettings();
+  }, []);
 
   return (
     <aside className={`side-menu ${isOpen ? 'visible' : ''}`}>
@@ -14,7 +26,10 @@ export default function Menu({ isOpen, onClose, onShowSignIn }) {
         <li><Link href="/">Home</Link></li>
         <li><Link href="/about">About</Link></li>
         <li><Link href="/whats-on">What's On</Link></li>
-        <li><Link href="/bookings">Private Bookings</Link></li>
+        <li><Link href="/bookings">View Bookings</Link></li>
+        {bookingsActive && (
+          <li><Link href="/bookings/new">Make a Booking</Link></li>
+        )}
         {session && (session.user?.role === "member" || session.user?.role === "admin" || session.user?.role === "leader") && (
           <>
             <li><button className="menu-btn" onClick={() => setShowMembersSub(v => !v)} aria-expanded={showMembersSub} aria-controls="members-submenu">Members</button></li>
@@ -47,4 +62,4 @@ export default function Menu({ isOpen, onClose, onShowSignIn }) {
       </ul>
     </aside>
   );
-}
+// ...existing code...

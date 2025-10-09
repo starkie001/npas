@@ -1,5 +1,5 @@
 {
-  "bookingsActive": false,
+  "bookingsActive": true,
   "requirements": [
     {
       "groupMin": 1,
@@ -12,6 +12,12 @@
       "groupMax": 20,
       "leadHosts": 2,
       "hosts": 3
+    },
+    {
+      "groupMin": 21,
+      "groupMax": 30,
+      "leadHosts": 2,
+      "hosts": 4
     }
   ]
 }

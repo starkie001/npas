@@ -94,11 +94,12 @@ export default function ObsAvailabilityPage() {
 
 		// Right panel state
 		const [bookingsActive, setBookingsActive] = useState(true);
-		const [requirements, setRequirements] = useState([
-			{ groupMin: 1, groupMax: 10, leadHosts: 1, hosts: 2 },
-			{ groupMin: 11, groupMax: 20, leadHosts: 2, hosts: 3 },
-		]);
-		const [savingSettings, setSavingSettings] = useState(false);
+			const [requirements, setRequirements] = useState([
+				{ groupMin: 1, groupMax: 10, leadHosts: 1, hosts: 2 },
+				{ groupMin: 11, groupMax: 20, leadHosts: 2, hosts: 3 },
+			]);
+			const [savingSettings, setSavingSettings] = useState(false);
+			const [settingsError, setSettingsError] = useState("");
 
 		// Fetch settings from backend
 		useEffect(() => {
@@ -116,25 +117,38 @@ export default function ObsAvailabilityPage() {
 		}, []);
 
 		function handleRequirementChange(idx, field, value) {
-			setRequirements(reqs =>
-				reqs.map((r, i) => i === idx ? { ...r, [field]: value } : r)
-			);
+				setRequirements(reqs =>
+					reqs.map((r, i) => i === idx ? { ...r, [field]: value } : r)
+				);
 		}
 
 		async function handleSaveSettings() {
-			setSavingSettings(true);
-			try {
-				await fetch("/api/obs-availability-settings", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ bookingsActive, requirements }),
-				});
-				alert("Settings saved!");
-			} catch (err) {
-				alert("Error saving settings");
-			} finally {
-				setSavingSettings(false);
-			}
+				setSettingsError("");
+				// Validation
+				for (let i = 0; i < requirements.length; i++) {
+					const r = requirements[i];
+					if (r.groupMin >= r.groupMax) {
+						setSettingsError(`Row ${i + 1}: Group Min must be less than Group Max.`);
+						return;
+					}
+					if (r.groupMin < 1 || r.groupMax < 1 || r.leadHosts < 0 || r.hosts < 0) {
+						setSettingsError(`Row ${i + 1}: All values must be positive.`);
+						return;
+					}
+				}
+				setSavingSettings(true);
+				try {
+					await fetch("/api/obs-availability-settings", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ bookingsActive, requirements }),
+					});
+					alert("Settings saved!");
+				} catch (err) {
+					setSettingsError("Error saving settings");
+				} finally {
+					setSavingSettings(false);
+				}
 		}
 
 		return (
@@ -172,54 +186,68 @@ export default function ObsAvailabilityPage() {
 						</label>
 					</div>
 					<h4>Lead Hosts & Hosts Required</h4>
-					<table className="table table-bordered">
-						<thead>
-							<tr>
-								<th>Group Min</th>
-								<th>Group Max</th>
-								<th>Lead Hosts</th>
-								<th>Hosts</th>
-							</tr>
-						</thead>
-						<tbody>
-							{requirements.map((r, idx) => (
-								<tr key={idx}>
-									<td>
-										<input type="number" value={r.groupMin}
-											onChange={e => handleRequirementChange(idx, "groupMin", Number(e.target.value))} />
-									</td>
-									<td>
-										<input type="number" value={r.groupMax}
-											onChange={e => handleRequirementChange(idx, "groupMax", Number(e.target.value))} />
-									</td>
-									<td>
-										<input type="number" value={r.leadHosts}
-											onChange={e => handleRequirementChange(idx, "leadHosts", Number(e.target.value))} />
-									</td>
-									<td>
-										<input type="number" value={r.hosts}
-											onChange={e => handleRequirementChange(idx, "hosts", Number(e.target.value))} />
-									</td>
-								</tr>
-							))}
-						</tbody>
+								<table className="table table-bordered requirements-table">
+									<thead>
+										<tr>
+											<th>Group Min</th>
+											<th>Group Max</th>
+											<th>Lead Hosts</th>
+											<th>Hosts</th>
+											<th style={{ width: '110px' }}>Remove Row</th>
+										</tr>
+									</thead>
+									<tbody>
+									{requirements.map((r, idx) => (
+										<tr key={idx}>
+											<td>
+												<input type="number" value={r.groupMin}
+													onChange={e => handleRequirementChange(idx, "groupMin", Number(e.target.value))} />
+											</td>
+											<td>
+												<input type="number" value={r.groupMax}
+													onChange={e => handleRequirementChange(idx, "groupMax", Number(e.target.value))} />
+											</td>
+											<td>
+												<input type="number" value={r.leadHosts}
+													onChange={e => handleRequirementChange(idx, "leadHosts", Number(e.target.value))} />
+											</td>
+											<td>
+												<input type="number" value={r.hosts}
+													onChange={e => handleRequirementChange(idx, "hosts", Number(e.target.value))} />
+											</td>
+															<td style={{ width: '110px', textAlign: 'center' }}>
+																<button className="btn btn-danger btn-sm" onClick={() => setRequirements(reqs => reqs.filter((_, i) => i !== idx))} disabled={requirements.length === 1}>Remove</button>
+															</td>
+										</tr>
+									))}
+								</tbody>
 					</table>
-					<button className="btn btn-success" onClick={handleSaveSettings} disabled={savingSettings}>
-						{savingSettings ? "Saving..." : "Save"}
-					</button>
+							<button className="btn btn-secondary me-2" onClick={() => setRequirements(reqs => [...reqs, { groupMin: 1, groupMax: 10, leadHosts: 1, hosts: 2 }])}>
+								Add Row
+							</button>
+							<button className="btn btn-success" onClick={handleSaveSettings} disabled={savingSettings}>
+								{savingSettings ? "Saving..." : "Save"}
+							</button>
+							{settingsError && <div className="alert alert-danger mt-2">{settingsError}</div>}
 				</div>
-				<style jsx>{`
-					.table input {
-						width: 60px;
-					}
-					.closed-date {
-						background: #ccc !important;
-					}
-					.open-date {
-						background: #4caf50 !important;
-						color: white !important;
-					}
-				`}</style>
+								<style jsx>{`
+									.table input {
+										width: 60px;
+									}
+									.requirements-table th, .requirements-table td {
+										vertical-align: middle;
+									}
+									.requirements-table th:last-child, .requirements-table td:last-child {
+										width: 110px;
+									}
+									.closed-date {
+										background: #ccc !important;
+									}
+									.open-date {
+										background: #4caf50 !important;
+										color: white !important;
+									}
+								`}</style>
 			</div>
 		);
 }

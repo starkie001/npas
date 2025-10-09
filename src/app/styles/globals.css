@@ -1,3 +1,56 @@
+/* Vertical overlay for Bootstrap collapse menu */
+.collapse.navbar-collapse {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100vh;
+  background: rgba(0,0,0,0.95);
+  color: white;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  z-index: 100;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  transform: translateX(100%);
+}
+
+.collapse.navbar-collapse.show {
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+/*.collapse:not(.show) {
+  display: none !important;
+}*/
+
+.navbar-nav {
+  flex-direction: column !important;
+  width: 100%;
+}
+
+.navbar-nav .nav-item {
+  margin-bottom: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+  color: white !important;
+  font-size: 1.2rem;
+  padding: 0.5rem 0;
+}
+
+.collapse.navbar-collapse .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  z-index: 101;
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -48,14 +101,18 @@ body {
   color: white;
 }
 
-header {
+/*header {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 80px;
-  /*z-index: 10;*/
+
+}*/
+
+.navbar-toggler {
+  display: block !important;
 }
 
 nav ul {
@@ -76,7 +133,7 @@ nav li {
 .background-image {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: -10;
   overflow: hidden;
 }
 
@@ -114,7 +171,7 @@ nav li {
 }
 
 /* Header */
-.header {
+/*.header {
   height: 80px;
   background-color: #D9D9D9;
   display: flex;
@@ -124,7 +181,7 @@ nav li {
   z-index: 10;
   position: relative;
   object-fit: cover;
-}
+}*/
 
 /* Responsive header */
 @media (max-width: 600px) {
@@ -223,16 +280,12 @@ nav li {
   cursor: pointer;
 }
 
-.container {
+/*.container {
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-}
+}*/
 
-.card {
-  flex: 1 1 300px;
-  max-width: 100%;
-}
 
 .signin-modal {
   position: fixed;

@@ -2,6 +2,7 @@
 import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import BootstrapClient from '../components/BootstrapClient';
 import "./styles/globals.css";
 import Providers from "@/components/Providers";
 /*import Navbar from "@/components/Navbar";*/
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <>
+          <BootstrapClient />
           <AppHeader />
           {children}
           </>

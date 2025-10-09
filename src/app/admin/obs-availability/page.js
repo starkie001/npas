@@ -92,33 +92,134 @@ export default function ObsAvailabilityPage() {
 		}
 	}
 
-	return (
-		<div className="container mt-5">
-			<h2>Observatory Availability</h2>
-			<p>Select nights the observatory can be open for bookings. Grey = closed, Green = open.</p>
-			{error && <div className="alert alert-danger">{error}</div>}
-			{loading ? (
-				<div>Loading...</div>
-			) : (
-				<>
-					<Calendar
-						onClickDay={handleDateClick}
-						tileClassName={tileClassName}
-					/>
-					<button className="btn btn-primary mt-3" onClick={handleSave} disabled={saving}>
-						{saving ? "Saving..." : "Save"}
+		// Right panel state
+		const [bookingsActive, setBookingsActive] = useState(true);
+		const [requirements, setRequirements] = useState([
+			{ groupMin: 1, groupMax: 10, leadHosts: 1, hosts: 2 },
+			{ groupMin: 11, groupMax: 20, leadHosts: 2, hosts: 3 },
+		]);
+		const [savingSettings, setSavingSettings] = useState(false);
+
+		// Fetch settings from backend
+		useEffect(() => {
+			async function fetchSettings() {
+				try {
+					const res = await fetch("/api/obs-availability-settings");
+					if (res.ok) {
+						const data = await res.json();
+						setBookingsActive(data.bookingsActive);
+						setRequirements(data.requirements);
+					}
+				} catch {}
+			}
+			fetchSettings();
+		}, []);
+
+		function handleRequirementChange(idx, field, value) {
+			setRequirements(reqs =>
+				reqs.map((r, i) => i === idx ? { ...r, [field]: value } : r)
+			);
+		}
+
+		async function handleSaveSettings() {
+			setSavingSettings(true);
+			try {
+				await fetch("/api/obs-availability-settings", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ bookingsActive, requirements }),
+				});
+				alert("Settings saved!");
+			} catch (err) {
+				alert("Error saving settings");
+			} finally {
+				setSavingSettings(false);
+			}
+		}
+
+		return (
+			<div className="container mt-5 d-flex flex-wrap">
+				{/* Left: Calendar */}
+				<div style={{ flex: 1, minWidth: 320 }}>
+					<h2>Observatory Availability</h2>
+					<p>Select nights the observatory can be open for bookings. Grey = closed, Green = open.</p>
+					{error && <div className="alert alert-danger">{error}</div>}
+					{loading ? (
+						<div>Loading...</div>
+					) : (
+						<>
+							<Calendar
+								onClickDay={handleDateClick}
+								tileClassName={tileClassName}
+							/>
+							<button className="btn btn-primary mt-3" onClick={handleSave} disabled={saving}>
+								{saving ? "Saving..." : "Save"}
+							</button>
+						</>
+					)}
+				</div>
+				{/* Right: Settings */}
+				<div style={{ flex: 1, minWidth: 320, marginLeft: "2rem" }}>
+					<h3>Booking Settings</h3>
+					<div className="mb-3">
+						<label>
+							<input
+								type="checkbox"
+								checked={bookingsActive}
+								onChange={e => setBookingsActive(e.target.checked)}
+							/>{" "}
+							Bookings Active
+						</label>
+					</div>
+					<h4>Lead Hosts & Hosts Required</h4>
+					<table className="table table-bordered">
+						<thead>
+							<tr>
+								<th>Group Min</th>
+								<th>Group Max</th>
+								<th>Lead Hosts</th>
+								<th>Hosts</th>
+							</tr>
+						</thead>
+						<tbody>
+							{requirements.map((r, idx) => (
+								<tr key={idx}>
+									<td>
+										<input type="number" value={r.groupMin}
+											onChange={e => handleRequirementChange(idx, "groupMin", Number(e.target.value))} />
+									</td>
+									<td>
+										<input type="number" value={r.groupMax}
+											onChange={e => handleRequirementChange(idx, "groupMax", Number(e.target.value))} />
+									</td>
+									<td>
+										<input type="number" value={r.leadHosts}
+											onChange={e => handleRequirementChange(idx, "leadHosts", Number(e.target.value))} />
+									</td>
+									<td>
+										<input type="number" value={r.hosts}
+											onChange={e => handleRequirementChange(idx, "hosts", Number(e.target.value))} />
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+					<button className="btn btn-success" onClick={handleSaveSettings} disabled={savingSettings}>
+						{savingSettings ? "Saving..." : "Save"}
 					</button>
-				</>
-			)}
-			<style jsx>{`
-				.closed-date {
-					background: #ccc !important;
-				}
-				.open-date {
-					background: #4caf50 !important;
-					color: white !important;
-				}
-			`}</style>
-		</div>
-	);
+				</div>
+				<style jsx>{`
+					.table input {
+						width: 60px;
+					}
+					.closed-date {
+						background: #ccc !important;
+					}
+					.open-date {
+						background: #4caf50 !important;
+						color: white !important;
+					}
+				`}</style>
+			</div>
+		);
 }

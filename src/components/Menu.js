@@ -26,6 +26,22 @@ import { useState, useEffect } from 'react';
         <li><Link href="/">Home</Link></li>
         <li><Link href="/about">About</Link></li>
         <li><Link href="/whats-on">What's On</Link></li>
+        <li>
+          <button
+            className="menu-btn"
+            onClick={() => {
+              if (!session) {
+                if (typeof onShowSignIn === "function") {
+                  onShowSignIn();
+                }
+              } else {
+                window.location.href = "/bookings";
+              }
+            }}
+          >
+            Private Bookings
+          </button>
+        </li>
         <li><Link href="/bookings">View Bookings</Link></li>
         {bookingsActive && (
           <li><Link href="/bookings/new">Make a Booking</Link></li>

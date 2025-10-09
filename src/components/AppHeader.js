@@ -50,7 +50,19 @@ export default function AppHeader() {
               <Link className="nav-link" href="/whats-on">What's On</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" href="/bookings">Private Bookings</Link>
+              <button
+                className="nav-link btn btn-link"
+                style={{ padding: 0, border: 'none', background: 'none' }}
+                onClick={() => {
+                  if (!session) {
+                    window.location.href = "/auth/signin";
+                  } else {
+                    window.location.href = "/bookings";
+                  }
+                }}
+              >
+                Private Bookings
+              </button>
             </li>
            {session && (session.user?.role === "member" || session.user?.role === "admin" || session.user?.role === "leader") && (
           <>

@@ -16,12 +16,7 @@ export default async function HandleRedirectAfterLogin() {
   const { role } = session.user
   console.log(`[Redirect Handler] User role: ${role}, redirecting accordingly`)
   
-  // Redirect based on user role
-  if (role === 'admin') {
-    console.log('[Redirect Handler] Redirecting admin to /admin/users')
-    redirect('/admin/users')
-  } else {
-    console.log('[Redirect Handler] Redirecting user to /account')
-    redirect('/account')
-  }
+  // Always redirect to bookings page after login
+  console.log('[Redirect Handler] Redirecting user to /bookings')
+  redirect('/bookings')
 }

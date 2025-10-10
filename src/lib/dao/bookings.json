@@ -44,5 +44,25 @@
     "date": "2025-10-21",
     "status": "confirmed",
     "created": "2025-10-10T07:09:45.581Z"
+  },
+  {
+    "id": "1760084119644",
+    "userId": "68e8bef5396ef9d7798adf31",
+    "role": "admin",
+    "groupName": "Test 001",
+    "groupType": "Family",
+    "groupSize": 8,
+    "interests": [
+      "Stars",
+      "Moon",
+      "Planets"
+    ],
+    "otherInfo": "Excited",
+    "date": "2025-10-16",
+    "status": "pending",
+    "created": "2025-10-10T08:15:19.644Z",
+    "confirmed": [
+      "68e8bef5396ef9d7798adf31"
+    ]
   }
 ]

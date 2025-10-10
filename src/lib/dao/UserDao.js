@@ -1,76 +1,87 @@
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DB_FILE = path.join(__dirname, 'users-db.json');
+import dbConnect from '../dbConfig.js';
+import User from '../models/User.js';
 
 export class UserDao {
-    async _readFile() {
-        const data = await readFile(DB_FILE, 'utf-8');
-        return JSON.parse(data);
-    }
-
-    async _writeFile(data) {
-        await writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-    }
-
     async getAllUsers() {
-        return await this._readFile();
+        await dbConnect();
+        const users = await User.find({}).lean();
+        return users.map(user => ({
+            ...user,
+            id: user._id.toString(),
+            _id: undefined
+        }));
     }
 
     async getUserById(id) {
-        const users = await this._readFile();
-        const user = users.find(u => u.id === id);
-        return user;
+        await dbConnect();
+        const user = await User.findById(id).lean();
+        if (!user) return null;
+        return {
+            ...user,
+            id: user._id.toString(),
+            _id: undefined
+        };
     }
 
     async getUserByEmail(email) {
-        const users = await this._readFile();
-        const user = users.find(u => u.email === email);
-        return user;
+        await dbConnect();
+        const user = await User.findOne({ email }).lean();
+        if (!user) return null;
+        return {
+            ...user,
+            id: user._id.toString(),
+            _id: undefined
+        };
     }
 
     async createUser(userData) {
-        const users = await this._readFile();
-        const nextId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
-        const now = new Date().toISOString();
-        const newUser = {
-            id: nextId,
+        await dbConnect();
+        const newUser = await User.create({
             name: userData.name,
             email: userData.email,
             password: userData.password,
             image: userData.image || null,
             role: userData.role || "customer",
-            status: userData.status || "active",
-            dateCreated: now,
-            dateUpdated: now
+            status: userData.status || "active"
+        });
+        
+        return {
+            ...newUser.toObject(),
+            id: newUser._id.toString(),
+            _id: undefined,
+            dateCreated: newUser.createdAt,
+            dateUpdated: newUser.updatedAt
         };
-        users.push(newUser);
-        await this._writeFile(users);
-        return newUser;
     }
 
     async updateUser(id, updatedData) {
-        const users = await this._readFile();
-        const index = users.findIndex(u => u.id === id);
-        if (index === -1) return null;
-        const now = new Date().toISOString();
-        users[index] = { 
-            ...users[index], 
-            ...updatedData,
-            dateUpdated: now 
+        await dbConnect();
+        const user = await User.findByIdAndUpdate(
+            id, 
+            updatedData,
+            { new: true, runValidators: true }
+        ).lean();
+        
+        if (!user) return null;
+        
+        return {
+            ...user,
+            id: user._id.toString(),
+            _id: undefined,
+            dateCreated: user.createdAt,
+            dateUpdated: user.updatedAt
         };
-        await this._writeFile(users);
-        return users[index];
     }
 
     async deleteUser(id) {
-        const users = await this._readFile();
-        const index = users.findIndex(u => u.id === id);
-        if (index === -1) return null;
-        const deleted = users.splice(index, 1);
-        await this._writeFile(users);
-        return deleted[0];
+        await dbConnect();
+        const user = await User.findByIdAndDelete(id).lean();
+        if (!user) return null;
+        
+        return {
+            ...user,
+            id: user._id.toString(),
+            _id: undefined
+        };
     }
 }

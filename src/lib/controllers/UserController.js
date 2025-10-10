@@ -27,7 +27,7 @@ export class UserController {
     async getUserById(id) {
         try {
             console.log(`[UserController] getUserById: Fetching user with ID: ${id}`);
-            const user = await this.userDao.getUserById(parseInt(id));
+            const user = await this.userDao.getUserById(id);
             if (!user) {
                 console.log(`[UserController] getUserById: User not found with ID: ${id}`);
                 return null;
@@ -133,7 +133,7 @@ export class UserController {
             console.log(`[UserController] updateUser: Updating user with ID: ${id}`);
             
             // Check if user exists
-            const existingUser = await this.userDao.getUserById(parseInt(id));
+            const existingUser = await this.userDao.getUserById(id);
             if (!existingUser) {
                 console.log(`[UserController] updateUser: User not found with ID: ${id}`);
                 return null;
@@ -155,7 +155,7 @@ export class UserController {
                 updatedData.password = await bcrypt.hash(updatedData.password, 10);
             }
 
-            const updatedUser = await this.userDao.updateUser(parseInt(id), updatedData);
+            const updatedUser = await this.userDao.updateUser(id, updatedData);
             console.log(`[UserController] updateUser: User updated successfully with ID: ${id}`);
             
             // Remove password from response
@@ -170,7 +170,7 @@ export class UserController {
     async deleteUser(id) {
         try {
             console.log(`[UserController] deleteUser: Deleting user with ID: ${id}`);
-            const deletedUser = await this.userDao.deleteUser(parseInt(id));
+            const deletedUser = await this.userDao.deleteUser(id);
             if (!deletedUser) {
                 console.log(`[UserController] deleteUser: User not found with ID: ${id}`);
                 return null;
@@ -195,7 +195,7 @@ export class UserController {
                 throw new Error('Invalid status. Must be active, inactive, or suspended');
             }
 
-            const updatedUser = await this.userDao.updateUser(parseInt(id), { status });
+            const updatedUser = await this.userDao.updateUser(id, { status });
             if (!updatedUser) {
                 console.log(`[UserController] changeUserStatus: User not found with ID: ${id}`);
                 return null;

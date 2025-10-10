@@ -5,8 +5,12 @@ import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-function formatDate(date) {
-  return date.toISOString().split("T")[0];
+function formatDateLocal(date) {
+  // Returns YYYY-MM-DD in local time
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export default function HostingAvailabilityPage() {
@@ -19,6 +23,8 @@ export default function HostingAvailabilityPage() {
   const [frequencyWeek, setFrequencyWeek] = useState(1);
   const [frequencyMonth, setFrequencyMonth] = useState(4);
   const [saving, setSaving] = useState(false);
+
+  const todayStr = formatDateLocal(new Date());
 
   // Access control: Only members, lead hosts, admin
   useEffect(() => {
@@ -63,8 +69,8 @@ export default function HostingAvailabilityPage() {
   }, []);
 
   function handleDateClick(date) {
-    const d = formatDate(date);
-    if (!openDates.includes(d)) return; // Only allow selection of open nights
+    const d = formatDateLocal(date);
+    if (!openDates.includes(d) || d <= todayStr) return;
     setSelectedDates(prev => {
       if (prev.includes(d)) {
         return prev.filter(x => x !== d);
@@ -76,7 +82,8 @@ export default function HostingAvailabilityPage() {
 
   function tileClassName({ date, view }) {
     if (view === "month") {
-      const d = formatDate(date);
+      const d = formatDateLocal(date);
+      if (d <= todayStr) return "closed-date";
       if (!openDates.includes(d)) return "closed-date";
       if (selectedDates.includes(d)) return "selected-date";
       return "open-date";

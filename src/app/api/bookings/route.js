@@ -1,3 +1,35 @@
+export async function POST(req) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const userId = String(session.user?.id);
+  const body = await req.json();
+  let data = await readData();
+  // Generate a unique booking ID
+  const bookingId = Date.now().toString();
+  // Determine status
+  let status = "pending";
+  if (body.groupType === "Member") status = "confirmed";
+  // Create booking object
+  const booking = {
+    id: bookingId,
+    userId,
+    role: session.user?.role || "Guest",
+    groupName: body.groupName,
+    groupType: body.groupType,
+    groupSize: body.groupSize,
+    interests: body.interests,
+    otherInfo: body.otherInfo,
+    date: body.date,
+    status,
+    created: new Date().toISOString(),
+  };
+  data.push(booking);
+  await writeData(data);
+  // TODO: Email members and admin if not Member type
+  return Response.json({ success: true, booking });
+}
 export async function PATCH(req) {
   const session = await getServerSession(authOptions);
   if (!session) {

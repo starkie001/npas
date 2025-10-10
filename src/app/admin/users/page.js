@@ -83,8 +83,15 @@ export default async function UsersPage() {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>
-                    <span className={`badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
-                      {user.role}
+                    <span className={`badge ${
+                      user.role === 'admin' ? 'bg-danger' :
+                      user.role === 'lead_host' ? 'bg-warning text-dark' :
+                      user.role === 'member' ? 'bg-success' :
+                      user.role === 'guest' ? 'bg-primary' :
+                      'bg-secondary'
+                    }`}>
+                      {user.role === 'lead_host' ? 'Lead Host' :
+                       user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
                   </td>
                   <td>

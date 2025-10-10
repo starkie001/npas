@@ -1,1 +1,33 @@
-[]
+[
+  {
+    "id": "1760048530166",
+    "userId": "1",
+    "role": "admin",
+    "groupName": "Scouts",
+    "groupType": "Club",
+    "groupSize": 5,
+    "interests": [
+      "Stars",
+      "Presentation"
+    ],
+    "otherInfo": "",
+    "date": "2025-10-13",
+    "status": "pending",
+    "created": "2025-10-09T22:22:10.166Z"
+  },
+  {
+    "id": "1760048666994",
+    "userId": "1",
+    "role": "admin",
+    "groupName": "Members booking",
+    "groupType": "Member",
+    "groupSize": 3,
+    "interests": [
+      "Nebula"
+    ],
+    "otherInfo": "",
+    "date": "2025-10-14",
+    "status": "confirmed",
+    "created": "2025-10-09T22:24:26.994Z"
+  }
+]

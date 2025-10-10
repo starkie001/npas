@@ -124,11 +124,13 @@ export default function EditUserForm({ user }) {
           onChange={handleChange}
           disabled={loading}
         >
-          <option value="customer">Customer</option>
-          <option value="admin">Administrator</option>
+         <option value="guest">Guest</option>
+         <option value="member">Member</option>
+         <option value="lead_host">Lead Host</option>
+         <option value="admin">Admin</option>
         </select>
         <div className="form-text">
-          Administrators have full access to the system.
+         Select the appropriate role for this user.
         </div>
       </div>
 

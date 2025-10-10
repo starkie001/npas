@@ -1,14 +1,22 @@
+
 "use client"
 
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react"; 
 
 export default function AppHeader() {
   const { data: session } = useSession();
   const [showAdminSub, setShowAdminSub] = useState(false);
-    const [showMembersSub, setShowMembersSub] = useState(false);
+  const [showMembersSub, setShowMembersSub] = useState(false);
+  const [showNav, setShowNav] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // Only enable navbar toggling after client mount to avoid SSR mismatch
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -26,17 +34,24 @@ export default function AppHeader() {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
           aria-label="Toggle navigation"
+          aria-controls="navbarNav"
+          aria-expanded={isClient ? showNav : false}
+          onClick={() => isClient && setShowNav(v => !v)}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <button type="button" className="btn-close" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#navbarNav" style={{position: 'absolute', top: '1rem', right: '1rem', color: 'white', background: 'none', border: 'none', fontSize: '2rem', zIndex: 101}}>&times;</button>
+        <div className={`navbar-collapse collapse${isClient && showNav ? ' show' : ''}`} id="navbarNav">
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            style={{position: 'absolute', top: '1rem', right: '1rem', color: 'white', background: 'none', border: 'none', fontSize: '2rem', zIndex: 101}}
+            onClick={() => isClient && setShowNav(false)}
+          >
+            &times;
+          </button>
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <Link className="nav-link" href="/">
@@ -51,8 +66,8 @@ export default function AppHeader() {
             </li>
             <li className="nav-item">
               <button
-                className="nav-link btn btn-link"
-                style={{ padding: 0, border: 'none', background: 'none' }}
+                className="nav-link"
+                style={{ padding: 0, border: 'none', background: 'none', color: 'inherit', fontWeight: 'inherit' }}
                 onClick={() => {
                   if (!session) {
                     window.location.href = "/auth/signin";
@@ -66,7 +81,9 @@ export default function AppHeader() {
             </li>
            {session && (session.user?.role === "member" || session.user?.role === "admin" || session.user?.role === "leader") && (
           <>
-            <li><button className="menu-btn" onClick={() => setShowMembersSub(v => !v)} aria-expanded={showMembersSub} aria-controls="members-submenu">Members</button></li>
+            <li className="nav-item">
+              <button className="nav-link" style={{ padding: 0, border: 'none', background: 'none', color: 'inherit', fontWeight: 'inherit' }} onClick={() => setShowMembersSub(v => !v)} aria-expanded={showMembersSub} aria-controls="members-submenu">Members</button>
+            </li>
             {showMembersSub && (
               <ul id="members-submenu" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                 <li><Link href="/members/hosting">Hosting</Link></li>
@@ -76,7 +93,9 @@ export default function AppHeader() {
         )}
         {session && session.user?.role === "admin" && (
                 <>
-                  <li><button className="menu-btn" onClick={() => setShowAdminSub(v => !v)} aria-expanded={showAdminSub} aria-controls="admin-submenu">Admin</button></li>
+                  <li className="nav-item">
+                    <button className="nav-link" style={{ padding: 0, border: 'none', background: 'none', color: 'inherit', fontWeight: 'inherit' }} onClick={() => setShowAdminSub(v => !v)} aria-expanded={showAdminSub} aria-controls="admin-submenu">Admin</button>
+                  </li>
                 {showAdminSub && (
                   <ul id="admin-submenu" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                     <li><Link href="/admin/users">User Management</Link></li>
@@ -94,7 +113,8 @@ export default function AppHeader() {
             ) : (
               <li className="nav-item">
                 <button
-                  className="btn btn-outline-light ms-2"
+                  className="nav-link"
+                  style={{ padding: 0, border: 'none', background: 'none', color: 'inherit', fontWeight: 'inherit' }}
                   onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   Logout

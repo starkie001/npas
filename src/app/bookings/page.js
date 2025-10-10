@@ -37,15 +37,22 @@ export default function BookingsPage() {
 		} catch {}
 	}
 
-		async function handleConfirm(id) {
-			try {
-				await fetch(`/api/bookings?id=${id}`, { method: "PATCH" });
-				setBookings(bookings => bookings.map(b => b.id === id ? { ...b, confirmed: true } : b));
-				alert("Availability confirmed for booking " + id);
-			} catch {
-				alert("Failed to confirm availability.");
-			}
+	async function handleConfirm(id) {
+		try {
+			await fetch(`/api/bookings?id=${id}`, { method: "PATCH" });
+			setBookings(bookings => bookings.map(b => b.id === id ? { ...b, confirmed: true } : b));
+			alert("Availability confirmed for booking " + id);
+		} catch {
+			alert("Failed to confirm availability.");
 		}
+	}
+
+	function shouldShowConfirmButton(booking) {
+		// Only show for non-Member bookings
+		return (
+			session && ["member", "leader", "admin"].includes(session.user?.role) && booking.groupType !== "Member"
+		);
+	}
 
 	return (
 		<div className="container mt-5">
@@ -80,7 +87,7 @@ export default function BookingsPage() {
 								<td>{b.status || "-"}</td>
 								<td>
 									<button className="btn btn-danger btn-sm me-2" onClick={() => handleDelete(b.id)}>Delete</button>
-									{(session && ["member", "leader", "admin"].includes(session.user?.role)) && (
+									{shouldShowConfirmButton(b) && (
 										<button className="btn btn-success btn-sm" onClick={() => handleConfirm(b.id)}>Confirm Availability</button>
 									)}
 								</td>

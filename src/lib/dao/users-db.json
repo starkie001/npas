@@ -16,10 +16,10 @@
     "email": "customer@example.com",
     "password": "$2b$10$DLWUo6S6Cd22whpmLMdNxuB0cggW66.UVyAeJCjXMbfJzlt4a5Hn.",
     "image": null,
-    "role": "customer",
+    "role": "guest",
     "status": "active",
     "dateCreated": "2025-09-22T10:00:00.000Z",
-    "dateUpdated": "2025-09-22T10:00:00.000Z"
+    "dateUpdated": "2025-10-09T22:49:59.965Z"
   },
   {
     "id": 3,
@@ -27,9 +27,9 @@
     "email": "test@example.com",
     "password": "test123",
     "image": null,
-    "role": "admin",
+    "role": "member",
     "status": "active",
     "dateCreated": "2025-09-22T10:00:00.000Z",
-    "dateUpdated": "2025-10-08T08:42:04.053Z"
+    "dateUpdated": "2025-10-09T23:00:29.095Z"
   }
 ]

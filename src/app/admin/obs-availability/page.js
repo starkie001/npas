@@ -10,6 +10,14 @@ function formatDate(date) {
 	return date.toISOString().split("T")[0];
 }
 
+function formatDateLocal(date) {
+  // Returns YYYY-MM-DD in local time
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export default function ObsAvailabilityPage() {
 	const router = useRouter();
 	const { data: session, status } = useSession();
@@ -49,8 +57,11 @@ export default function ObsAvailabilityPage() {
 		fetchAvailability();
 	}, []);
 
+	const todayStr = formatDateLocal(new Date());
+
 	function handleDateClick(date) {
-		const d = formatDate(date);
+		const d = formatDateLocal(date);
+		if (d <= todayStr) return;
 		setOpenDates((prev) =>
 			prev.includes(d)
 				? prev.filter((x) => x !== d)
@@ -60,7 +71,9 @@ export default function ObsAvailabilityPage() {
 
 	function tileClassName({ date, view }) {
 		if (view === "month") {
-			return openDates.includes(formatDate(date))
+			const d = formatDateLocal(date);
+			if (d <= todayStr) return "closed-date";
+			return openDates.includes(d)
 				? "open-date"
 				: "closed-date";
 		}

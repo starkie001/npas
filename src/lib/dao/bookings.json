@@ -29,5 +29,20 @@
     "date": "2025-10-14",
     "status": "confirmed",
     "created": "2025-10-09T22:24:26.994Z"
+  },
+  {
+    "id": "1760080185581",
+    "userId": "1",
+    "role": "admin",
+    "groupName": "Trial",
+    "groupType": "Member",
+    "groupSize": 5,
+    "interests": [
+      "Stars"
+    ],
+    "otherInfo": "",
+    "date": "2025-10-21",
+    "status": "confirmed",
+    "created": "2025-10-10T07:09:45.581Z"
   }
 ]

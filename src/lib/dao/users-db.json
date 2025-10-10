@@ -27,9 +27,9 @@
     "email": "test@example.com",
     "password": "test123",
     "image": null,
-    "role": "member",
+    "role": "lead_host",
     "status": "active",
     "dateCreated": "2025-09-22T10:00:00.000Z",
-    "dateUpdated": "2025-10-09T23:00:29.095Z"
+    "dateUpdated": "2025-10-10T07:04:30.280Z"
   }
 ]

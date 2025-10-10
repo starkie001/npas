@@ -99,7 +99,7 @@ export default function AppHeader() {
                 {showAdminSub && (
                   <ul id="admin-submenu" style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
                     <li><Link href="/admin/users">User Management</Link></li>
-                    <li><Link href="/admin/settings">Obs. Availability</Link></li>
+                    <li><Link href="/admin/obs-availability">Obs. Availability</Link></li>
                   </ul>
                 )}
                 </>
